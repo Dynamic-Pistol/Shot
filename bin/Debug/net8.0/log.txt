@@ -1,0 +1,18 @@
+2024-10-26 16:02:23.912 +03:00 [ERR] "DebugTypeError", 0:11(2): error: `FragPos' undeclared
+2024-10-26 16:02:24.006 +03:00 [ERR] "DebugTypeError", 0:11(2): error: value of type vec3 cannot be assigned to variable of type error
+2024-10-26 16:02:24.006 +03:00 [ERR] "DebugTypeError", 0:12(2): error: `Normal' undeclared
+2024-10-26 16:02:24.007 +03:00 [ERR] "DebugTypeError", 0:12(11): error: `aNormal' undeclared
+2024-10-26 16:02:24.007 +03:00 [ERR] "DebugTypeError", 0:12(11): error: operands to arithmetic operators must be numeric
+2024-10-26 16:02:24.008 +03:00 [ERR] Error compiling shader of type "VertexShader": 0:11(2): error: `FragPos' undeclared
+0:11(2): error: value of type vec3 cannot be assigned to variable of type error
+0:12(2): error: `Normal' undeclared
+0:12(11): error: `aNormal' undeclared
+0:12(11): error: operands to arithmetic operators must be numeric
+
+2024-10-26 17:17:27.360 +03:00 [ERR] "DebugTypeError", 0:22(1): error: `out' qualifier in declaration of `FragColor' only valid for function parameters in GLSL 1.10
+2024-10-26 17:17:27.468 +03:00 [ERR] "DebugTypeError", 0:23(1): error: `in' qualifier in declaration of `Normal' only valid for function parameters in GLSL 1.10
+2024-10-26 17:17:27.468 +03:00 [ERR] "DebugTypeError", 0:24(1): error: `in' qualifier in declaration of `FragPos' only valid for function parameters in GLSL 1.10
+2024-10-26 17:17:27.470 +03:00 [ERR] Error compiling shader of type "FragmentShader": 0:22(1): error: `out' qualifier in declaration of `FragColor' only valid for function parameters in GLSL 1.10
+0:23(1): error: `in' qualifier in declaration of `Normal' only valid for function parameters in GLSL 1.10
+0:24(1): error: `in' qualifier in declaration of `FragPos' only valid for function parameters in GLSL 1.10
+
