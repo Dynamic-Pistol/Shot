@@ -10,19 +10,20 @@ public class ShotCamera
     public Vector3 Position { get; private set; } = Vector3.Zero;
     public Matrix4 View;
     private Vector3 _cameraForward = -Vector3.UnitZ;
-    private float _fov = MathHelper.PiOver2;
     public float Yaw;
     public float Pitch;
-    public float FOV => _fov;
+    public float Fov { get; private set; } = MathHelper.PiOver2;
+
     private bool _canRotate = true;
     private const float Speed = 6;
 
-    public void MoveCamera(Vector2 moveInput, float delta, float scrollDelta)
+    public void MoveCamera(Vector3 moveInput, float delta, float scrollDelta)
     {
         Position += Vector3.Normalize(Vector3.Cross(_cameraForward, _cameraUp)) * moveInput.X * Speed * delta;
         Position += _cameraForward * moveInput.Y * Speed * delta;
-        _fov = Math.Clamp(_fov - scrollDelta, 1, 45);
-        Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(_fov),
+        Position += _cameraUp * moveInput.Z * Speed * delta;
+        Fov = Math.Clamp(Fov - scrollDelta, 1, 45);
+        Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(Fov),
             800.0f / 600.0f,
             0.1f, 100f);
         View = Matrix4.LookAt(Position, Position + _cameraForward, _cameraUp);
