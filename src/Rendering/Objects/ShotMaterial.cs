@@ -108,7 +108,7 @@ public class ShotMaterial
         {
             var newLocation = CheckLocationExists(GL.GetUniformLocation(_program, name));
             _uniformLocations.Add(name, newLocation);
-            GL.Uniform2(newLocation, value.X, value.Y);
+            GL.Uniform2(newLocation, value);
         }
     }
 
@@ -116,13 +116,13 @@ public class ShotMaterial
     {
         if (_uniformLocations.TryGetValue(name, out var location))
         {
-            GL.Uniform3(location, value.X, value.Y, value.Z);
+            GL.Uniform3(location, value);
         }
         else
         {
             var newLocation = CheckLocationExists(GL.GetUniformLocation(_program, name));
             _uniformLocations.Add(name, newLocation);
-            GL.Uniform3(newLocation, value.X, value.Y, value.Z);
+            GL.Uniform3(newLocation, value);
         }
     }
 
