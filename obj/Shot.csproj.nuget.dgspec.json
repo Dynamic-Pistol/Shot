@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/malek/Documents/Projects/Shot/Shot/Shot.csproj": {}
+    "/run/media/kyle/Main_Disk/Projects/Shot/Shot/Shot.csproj": {}
   },
   "projects": {
-    "/home/malek/Documents/Projects/Shot/Shot/Shot.csproj": {
+    "/run/media/kyle/Main_Disk/Projects/Shot/Shot/Shot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/malek/Documents/Projects/Shot/Shot/Shot.csproj",
+        "projectUniqueName": "/run/media/kyle/Main_Disk/Projects/Shot/Shot/Shot.csproj",
         "projectName": "Shot",
-        "projectPath": "/home/malek/Documents/Projects/Shot/Shot/Shot.csproj",
-        "packagesPath": "/home/malek/.nuget/packages/",
-        "outputPath": "/home/malek/Documents/Projects/Shot/Shot/obj/",
+        "projectPath": "/run/media/kyle/Main_Disk/Projects/Shot/Shot/Shot.csproj",
+        "packagesPath": "/home/kyle/.nuget/packages/",
+        "outputPath": "/run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/malek/.nuget/NuGet/NuGet.Config"
+          "/home/kyle/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -78,12 +78,18 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.11, 8.0.11]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/malek/.dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.111/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

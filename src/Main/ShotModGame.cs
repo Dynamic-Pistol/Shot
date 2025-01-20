@@ -78,6 +78,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     protected override void OnLoad()
     {
         base.OnLoad();
+        _camera.LockCamera();
         _controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
         GL.DebugMessageCallback(DebugMessages, IntPtr.Zero);
@@ -196,13 +197,9 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         
         if (ImGui.Begin("Test"))
         {
-            ImGui.Text($"Position:{_camera.Position}");
-            ImGui.Text($"Rotation:{_camera.Yaw}, {_camera.Pitch}");
-            ImGui.End();
-        }
-
-        if (ImGui.Begin("Light transform"))
-        {
+            ImGui.Text($"Camera Position:{_camera.Position}");
+            ImGui.Text($"Camera Rotation:{_camera.Yaw}, {_camera.Pitch}");
+            ImGui.Text($"Camera Zoom: {_camera.FOV}");
             ImGui.DragFloat3("Light position", ref _lightPos, 0.01f);
             ImGui.End();
         }

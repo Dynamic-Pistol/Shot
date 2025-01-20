@@ -13,6 +13,7 @@ public class ShotCamera
     private float _fov = MathHelper.PiOver2;
     public float Yaw;
     public float Pitch;
+    public float FOV => _fov;
     private bool _canRotate = true;
     private const float Speed = 6;
 
