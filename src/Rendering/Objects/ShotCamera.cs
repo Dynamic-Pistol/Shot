@@ -7,12 +7,12 @@ public class ShotCamera
 {
     public Matrix4 Projection;
     private readonly Vector3 _cameraUp = Vector3.UnitY;
-    public Vector3 Position { get; private set; } = Vector3.Zero;
+    public Vector3 Position { get; private set; } = new(0, 0, 6);
     public Matrix4 View;
     private Vector3 _cameraForward = -Vector3.UnitZ;
-    public float Yaw;
+    public float Yaw = -90.0f;
     public float Pitch;
-    public float Fov { get; private set; } = MathHelper.PiOver2;
+    public float Fov { get; private set; } = 45.0f;
 
     private bool _canRotate = true;
     private const float Speed = 6;

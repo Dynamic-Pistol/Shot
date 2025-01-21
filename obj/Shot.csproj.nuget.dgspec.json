@@ -44,15 +44,15 @@
             },
             "ImGui.NET": {
               "target": "Package",
-              "version": "[1.91.0.1, )"
+              "version": "[1.91.6.1, )"
             },
             "OpenTK": {
               "target": "Package",
-              "version": "[4.8.2, )"
+              "version": "[4.9.3, )"
             },
             "Serilog": {
               "target": "Package",
-              "version": "[4.0.2, )"
+              "version": "[4.2.0, )"
             },
             "Serilog.Sinks.Console": {
               "target": "Package",

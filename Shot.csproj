@@ -17,9 +17,9 @@
 
     <ItemGroup>
       <PackageReference Include="Arch" Version="1.2.8" />
-      <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
-      <PackageReference Include="OpenTK" Version="4.8.2" />
-      <PackageReference Include="Serilog" Version="4.0.2" />
+      <PackageReference Include="ImGui.NET" Version="1.91.6.1" />
+      <PackageReference Include="OpenTK" Version="4.9.3" />
+      <PackageReference Include="Serilog" Version="4.2.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
       <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
       <PackageReference Include="StbImageSharp" Version="2.30.15" />
@@ -54,6 +54,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Assets\container2_specular.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Assets\lighting_maps_specular_color.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

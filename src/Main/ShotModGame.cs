@@ -20,59 +20,77 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     private ImGuiController _controller = null!;
 
     private readonly float[] _vertices =
-    [
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    [ 
+    // positions          // normals           // texture coords
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     ];
 
+    private readonly Vector3[] _cubePositions =
+    [
+        new Vector3(0.0f, 0.0f, 0.0f),
+        new Vector3(2.0f, 5.0f, -15.0f),
+        new Vector3(-1.5f, -2.2f, -2.5f),
+        new Vector3(-3.8f, -2.0f, -12.3f),
+        new Vector3(2.4f, -0.4f, -3.5f),
+        new Vector3(-1.7f, 3.0f, -7.5f),
+        new Vector3(1.3f, -2.0f, -2.5f),
+        new Vector3(1.5f, 2.0f, -2.5f),
+        new Vector3(1.5f, 0.2f, -1.5f),
+        new Vector3(-1.3f, 1.0f, -1.5f)
+    ];
+    
     private uint _cubeVao;
     private uint _lightVao;
     
     private uint _vbo;
 
-    private ShotMaterial _cubeMat = null!;
-    private ShotMaterial _lightMat = null!;
+    private ShotMaterial _lampMat = null!;
+    private ShotMaterial _objectMat = null!;
 
-    private System.Numerics.Vector3 _lightPos = System.Numerics.Vector3.Zero;
+    private Vector3 _lightPos = new Vector3(0, 0, 3);
+
+    private uint _tex1;
+    private uint _tex2;
 
     protected override void OnLoad()
     {
@@ -85,13 +103,13 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         GL.Enable(EnableCap.DebugOutputSynchronous);
         GL.Enable(EnableCap.DepthTest);
 
-        _cubeMat = new ShotMaterial(new Dictionary<ShaderType, string>
+        _lampMat = new ShotMaterial(new Dictionary<ShaderType, string>
         {
             { ShaderType.VertexShader, File.ReadAllText("Assets/Shaders/cube.vert") },
             { ShaderType.FragmentShader, File.ReadAllText("Assets/Shaders/cube.frag") }
         });
 
-        _lightMat = new ShotMaterial(new Dictionary<ShaderType, string>
+        _objectMat = new ShotMaterial(new Dictionary<ShaderType, string>
         {
             { ShaderType.VertexShader, File.ReadAllText("Assets/Shaders/light.vert") },
             { ShaderType.FragmentShader, File.ReadAllText("Assets/Shaders/light.frag") }
@@ -105,7 +123,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf<ShotVertex>() * _vertices.Length, _vertices,
             BufferUsageHint.StaticDraw);
 
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(float) * 6,
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(float) * 8,
             0);
         GL.EnableVertexAttribArray(0);
         
@@ -114,13 +132,23 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
         
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(float) * 6,
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, sizeof(float) * 8,
             0);
         GL.EnableVertexAttribArray(0);
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(float) * 6,
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, sizeof(float) * 8,
             3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
 
+        GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, sizeof(float) * 8,
+            6 * sizeof(float));
+        GL.EnableVertexAttribArray(2);
+        
+        _tex1 = LoadTexture("Assets/container2.png");
+        _objectMat.Use();
+        _objectMat.SetIntUniform("material.diffuse", 0);
+        
+        _tex2 = LoadTexture("Assets/lighting_maps_specular_color.png");
+        _objectMat.SetIntUniform("material.specular", 1);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -153,47 +181,40 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         GL.ClearColor(Color.Black);
 
+        _objectMat.Use();
+        _objectMat.SetVector3Uniform("light.position", _lightPos);
+        _objectMat.SetVector3Uniform("light.ambient", new Vector3(0.2f, 0.2f, 0.2f));
+        _objectMat.SetVector3Uniform("light.diffuse", new Vector3( 0.5f, 0.5f, 0.5f));
+        _objectMat.SetVector3Uniform("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
         
-        // _lightMat.SetVector3Uniform("material.ambient", new Vector3(1.0f, 0.5f, 0.31f));
-        // _lightMat.SetVector3Uniform("material.diffuse", new Vector3(1.0f, 0.5f, 0.31f));
-        // _lightMat.SetVector3Uniform("material.specular", new Vector3(0.5f, 0.5f, 0.5f));
-        // _lightMat.SetFloatUniform("material.shininess", 32.0f);
+        _objectMat.SetMatrix4Uniform("projection", _camera.Projection);
+        _objectMat.SetMatrix4Uniform("view", _camera.View);
+        _objectMat.SetVector3Uniform("viewPos", _camera.Position);
         
-        
-        var lightModel = Matrix4.Identity;
-        Vector3 lightColor;
-        float time = DateTime.Now.Second + DateTime.Now.Millisecond / 1000f;
-        lightColor.X = (MathF.Sin(time * 2.0f) + 1) / 2f;
-        lightColor.Y = (MathF.Sin(time * 0.7f) + 1) / 2f;
-        lightColor.Z = (MathF.Sin(time * 1.3f) + 1) / 2f;
+        _objectMat.SetFloatUniform("material.shininess", 32.0f);
 
-        // The ambient light is less intensive than the diffuse light in order to make it less dominant
-        // Vector3 ambientColor = lightColor * new Vector3(0.2f);
-        // Vector3 diffuseColor = lightColor * new Vector3(0.5f);
+        GL.ActiveTexture(TextureUnit.Texture0);
+        GL.BindTexture(TextureTarget.Texture2D, _tex1);
+        GL.ActiveTexture(TextureUnit.Texture1);
+        GL.BindTexture(TextureTarget.Texture2D, _tex2);
 
-        // _lightMat.SetVector3Uniform("light.position", _lightPos.Sys2OpenTk());
-        // _lightMat.SetVector3Uniform("light.ambient", ambientColor);
-        // _lightMat.SetVector3Uniform("light.diffuse", diffuseColor);
-        // _lightMat.SetVector3Uniform("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
-        
-        _lightMat.Use();
-        _lightMat.SetVector3Uniform("lightPos", _lightPos.Sys2OpenTk());
-        _lightMat.SetVector3Uniform("lightColor", new Vector3( 1.0f, 0.5f, 0.31f));
-        _lightMat.SetVector3Uniform("objectColor", new Vector3(1.0f, 1.0f, 1.0f));
-        _lightMat.SetMatrix4Uniform("projection", _camera.Projection);
-        _lightMat.SetMatrix4Uniform("view", _camera.View);
-        _lightMat.SetVector3Uniform("viewPos", _camera.Position);
-        _lightMat.SetMatrix4Uniform("model", lightModel);
-        
         GL.BindVertexArray(_lightVao);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+        for (int i = 0; i < _cubePositions.Length; i++)
+        {
+            var rot = 20f * i;
+            var objectModel = Matrix4.Identity * Matrix4.CreateTranslation(_cubePositions[i]) * 
+                              Matrix4.CreateFromAxisAngle(new Vector3(1, 0.3f, 0), rot);
+            _objectMat.SetMatrix4Uniform("model", objectModel);
         
-        var cubeModel = Matrix4.Identity * Matrix4.CreateTranslation(_lightPos.Sys2OpenTk()) * Matrix4.CreateScale(0.2f);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+        }
         
-        _cubeMat.Use();
-        _cubeMat.SetMatrix4Uniform("proj", _camera.Projection);
-        _cubeMat.SetMatrix4Uniform("view", _camera.View);
-        _cubeMat.SetMatrix4Uniform("model", cubeModel);
+        var lampModel = Matrix4.Identity * Matrix4.CreateTranslation(_lightPos) * Matrix4.CreateScale(0.2f);
+        
+        _lampMat.Use();
+        _lampMat.SetMatrix4Uniform("proj", _camera.Projection);
+        _lampMat.SetMatrix4Uniform("view", _camera.View);
+        _lampMat.SetMatrix4Uniform("model", lampModel);
 
         GL.BindVertexArray(_cubeVao);
         GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
@@ -204,7 +225,13 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             ImGui.Text($"Camera Position:{_camera.Position}");
             ImGui.Text($"Camera Rotation:{_camera.Yaw}, {_camera.Pitch}");
             ImGui.Text($"Camera Zoom: {_camera.Fov}");
-            ImGui.DragFloat3("Light position", ref _lightPos, 0.01f);
+            var snLightPos = _lightPos.OpenTk2Sys();
+            ImGui.DragFloat3("Light position", ref snLightPos, 0.01f);
+            _lightPos = snLightPos.Sys2OpenTk();
+            ImGui.End();
+        }
+        else
+        {
             ImGui.End();
         }
         
@@ -249,7 +276,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     }
 
     private void DebugMessages(DebugSource source, DebugType type, int id, DebugSeverity severity, int length,
-        IntPtr message, IntPtr userparam)
+        IntPtr message, IntPtr userParam)
     {
         var msg = Marshal.PtrToStringAnsi(message, length);
 
