@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Runtime.InteropServices;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL;
@@ -65,18 +64,18 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     ];
 
-    private readonly Vector3[] _cubePositions =
+    private readonly ShotTransform[] _cubeTransforms =
     [
-        new Vector3(0.0f, 0.0f, 0.0f),
-        new Vector3(2.0f, 5.0f, -15.0f),
-        new Vector3(-1.5f, -2.2f, -2.5f),
-        new Vector3(-3.8f, -2.0f, -12.3f),
-        new Vector3(2.4f, -0.4f, -3.5f),
-        new Vector3(-1.7f, 3.0f, -7.5f),
-        new Vector3(1.3f, -2.0f, -2.5f),
-        new Vector3(1.5f, 2.0f, -2.5f),
-        new Vector3(1.5f, 0.2f, -1.5f),
-        new Vector3(-1.3f, 1.0f, -1.5f)
+        new ShotTransform(new Vector3(0.0f, 0.0f, 0.0f)),
+        new ShotTransform(new Vector3(2.0f, 5.0f, -15.0f)),
+        new ShotTransform(new Vector3(-1.5f, -2.2f, -2.5f)),
+        new ShotTransform(new Vector3(-3.8f, -2.0f, -12.3f)),
+        new ShotTransform(new Vector3(2.4f, -0.4f, -3.5f)),
+        new ShotTransform(new Vector3(-1.7f, 3.0f, -7.5f)),
+        new ShotTransform(new Vector3(1.3f, -2.0f, -2.5f)),
+        new ShotTransform(new Vector3(1.5f, 2.0f, -2.5f)),
+        new ShotTransform(new Vector3(1.5f, 0.2f, -1.5f)),
+        new ShotTransform(new Vector3(-1.3f, 1.0f, -1.5f))
     ];
     
     private uint _cubeVao;
@@ -91,6 +90,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
 
     private uint _tex1;
     private uint _tex2;
+    private int _selectedObject;
 
     protected override void OnLoad()
     {
@@ -150,6 +150,11 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
 
         _objectMat.SetIntUniform("material.diffuse", 0);
         _objectMat.SetIntUniform("material.specular", 1);
+        for (int i = 0; i < _cubeTransforms.Length; i++)
+        {
+            var rot = MathHelper.DegreesToRadians(20f * i);
+            _cubeTransforms[i].Rotation = Quaternion.FromAxisAngle(new Vector3(1.0f, 0.3f, 0.5f), rot);
+        }
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -200,12 +205,20 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         GL.BindTexture(TextureTarget.Texture2D, _tex2);
 
         GL.BindVertexArray(_lightVao);
-        for (int i = 0; i < _cubePositions.Length; i++)
+        for (int i = 0; i < _cubeTransforms.Length; i++)
         {
-            var rot = MathHelper.DegreesToRadians(20f * i);
-            var objectModel = Matrix4.Identity * Matrix4.CreateTranslation(_cubePositions[i]) * 
-                              Matrix4.CreateFromAxisAngle(new Vector3(1.0f, 0.3f, 0.5f), rot);
+            var objectModel = Matrix4.Identity * Matrix4.CreateTranslation(_cubeTransforms[i].Position) * 
+                              Matrix4.CreateFromQuaternion(_cubeTransforms[i].Rotation);
             _objectMat.SetMatrix4Uniform("model", objectModel);
+
+            if (i == _selectedObject)
+            {
+                _objectMat.SetIntUniform("selected", 1);
+            }
+            else
+            {
+                _objectMat.SetIntUniform("selected", 0);
+            }
         
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
         }
@@ -235,6 +248,39 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         {
             ImGui.End();
         }
+
+        if (ImGui.Begin("Inspector"))
+        {
+            var selectedPosition = _cubeTransforms[_selectedObject].Position.OpenTk2Sys();
+            ImGui.DragFloat3("Position", ref selectedPosition, 0.01f);
+            _cubeTransforms[_selectedObject].Position = selectedPosition.Sys2OpenTk();
+            var selectedRotation = _cubeTransforms[_selectedObject].Rotation.ToEulerAngles().OpenTk2Sys();
+            ImGui.DragFloat3("Rotation", ref selectedRotation, 0.01f);
+            _cubeTransforms[_selectedObject].Rotation = Quaternion.Identity * Quaternion.FromEulerAngles(selectedRotation.X,selectedRotation.Y,selectedRotation.Z);
+            ImGui.End();
+        }
+        else
+        {
+            ImGui.End();
+        }
+        
+        if (ImGui.Begin("Hierarchy"))
+        {
+            for (int i = 0; i < _cubeTransforms.Length; i++)
+            {
+                
+                if (ImGui.Selectable($"Cube {i}", i == _selectedObject))
+                {
+                    _selectedObject = i;
+                }
+            }
+            ImGui.End();
+        }
+        else
+        {
+            ImGui.End();
+        }
+        
         
         _controller.Render();
 

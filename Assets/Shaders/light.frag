@@ -23,6 +23,7 @@ in vec2 TexCoords;
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
+uniform int selected;
 
 void main()
 {
@@ -43,6 +44,11 @@ void main()
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
 
     vec3 result = ambient + diffuse + specular;
+    
+    if (selected != 0){
+        result *= vec3(1, 1, 0);
+    }
+    
     FragColor = vec4(result, 1.0);
 } 
 
