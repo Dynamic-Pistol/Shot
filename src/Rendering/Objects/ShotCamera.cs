@@ -5,10 +5,12 @@ namespace Shot.Rendering.Objects;
 
 public class ShotCamera
 {
-    public Matrix4 Projection;
+    public Matrix4 Projection => Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(Fov),
+        800.0f / 600.0f,
+        0.1f, 100f);
     private readonly Vector3 _cameraUp = Vector3.UnitY;
-    public Vector3 Position { get; private set; } = new(0, 0, 6);
-    public Matrix4 View;
+    public Vector3 Position { get; private set; } = new Vector3(0, 0, 6);
+    public Matrix4 View => Matrix4.LookAt(Position, Position + _cameraForward, _cameraUp);
     private Vector3 _cameraForward = -Vector3.UnitZ;
     public float Yaw = -90.0f;
     public float Pitch;
@@ -23,10 +25,6 @@ public class ShotCamera
         Position += _cameraForward * moveInput.Y * Speed * delta;
         Position += _cameraUp * moveInput.Z * Speed * delta;
         Fov = Math.Clamp(Fov - scrollDelta, 1, 45);
-        Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(Fov),
-            800.0f / 600.0f,
-            0.1f, 100f);
-        View = Matrix4.LookAt(Position, Position + _cameraForward, _cameraUp);
     }
 
     public void RotateCamera(float moveX, float moveY)

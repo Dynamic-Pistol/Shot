@@ -1753,3 +1753,28 @@
 2025-01-21 20:51:28.520 +02:00 [INF] {}
 2025-01-21 20:52:33.022 +02:00 [INF] {}
 2025-01-21 20:53:19.841 +02:00 [INF] {}
+2025-01-21 22:01:50.516 +02:00 [ERR] "DebugTypeError", 0:35(7): error: `lightDir' redeclared
+2025-01-21 22:01:50.605 +02:00 [ERR] "DebugTypeError", 0:35(28): error: cannot access field `position' of structure
+2025-01-21 22:01:50.605 +02:00 [ERR] "DebugTypeError", 0:35(28): error: type mismatch
+2025-01-21 22:01:50.606 +02:00 [ERR] "DebugTypeError", 0:35(28): error: operands to arithmetic operators must be numeric
+2025-01-21 22:01:50.606 +02:00 [ERR] "DebugTypeError", 0:35(18): error: no matching function for call to `normalize(error)'; candidates are:
+2025-01-21 22:01:50.606 +02:00 [ERR] "DebugTypeError", 0:35(18): error:    float normalize(float)
+2025-01-21 22:01:50.606 +02:00 [ERR] "DebugTypeError", 0:35(18): error:    vec2 normalize(vec2)
+2025-01-21 22:01:50.606 +02:00 [ERR] "DebugTypeError", 0:35(18): error:    vec3 normalize(vec3)
+2025-01-21 22:01:50.606 +02:00 [ERR] "DebugTypeError", 0:35(18): error:    vec4 normalize(vec4)
+2025-01-21 22:01:50.608 +02:00 [ERR] Error compiling shader of type "FragmentShader": 0:35(7): error: `lightDir' redeclared
+0:35(28): error: cannot access field `position' of structure
+0:35(28): error: type mismatch
+0:35(28): error: operands to arithmetic operators must be numeric
+0:35(18): error: no matching function for call to `normalize(error)'; candidates are:
+0:35(18): error:    float normalize(float)
+0:35(18): error:    vec2 normalize(vec2)
+0:35(18): error:    vec3 normalize(vec3)
+0:35(18): error:    vec4 normalize(vec4)
+
+2025-01-21 23:30:18.779 +02:00 [ERR] "DebugTypeError", 0:10(1): error: uniform block layout qualifiers row_major and column_major may not be applied to variables outside of uniform blocks
+2025-01-21 23:30:18.860 +02:00 [ERR] Error compiling shader of type "VertexShader": 0:10(1): error: uniform block layout qualifiers row_major and column_major may not be applied to variables outside of uniform blocks
+
+2025-01-21 23:30:21.299 +02:00 [ERR] "DebugTypeError", 0:10(1): error: uniform block layout qualifiers row_major and column_major may not be applied to variables outside of uniform blocks
+2025-01-21 23:30:21.385 +02:00 [ERR] Error compiling shader of type "VertexShader": 0:10(1): error: uniform block layout qualifiers row_major and column_major may not be applied to variables outside of uniform blocks
+

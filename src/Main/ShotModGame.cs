@@ -144,10 +144,11 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         GL.EnableVertexAttribArray(2);
         
         _tex1 = LoadTexture("Assets/container2.png");
-        _objectMat.Use();
-        _objectMat.SetIntUniform("material.diffuse", 0);
-        
         _tex2 = LoadTexture("Assets/lighting_maps_specular_color.png");
+        
+        _objectMat.Use();
+
+        _objectMat.SetIntUniform("material.diffuse", 0);
         _objectMat.SetIntUniform("material.specular", 1);
     }
 
@@ -155,9 +156,9 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     {
         base.OnUpdateFrame(args);
         var moveInput = Vector3.Zero;
-        moveInput.X = Convert.ToInt32(KeyboardState[Keys.D]) - Convert.ToInt32(KeyboardState[Keys.A]);
-        moveInput.Y = Convert.ToInt32(KeyboardState[Keys.W]) - Convert.ToInt32(KeyboardState[Keys.S]);
-        moveInput.Z = Convert.ToInt32(KeyboardState[Keys.E]) - Convert.ToInt32(KeyboardState[Keys.Q]);
+        moveInput.X = Convert.ToSingle(KeyboardState[Keys.D]) - Convert.ToSingle(KeyboardState[Keys.A]);
+        moveInput.Y = Convert.ToSingle(KeyboardState[Keys.W]) - Convert.ToSingle(KeyboardState[Keys.S]);
+        moveInput.Z = Convert.ToSingle(KeyboardState[Keys.E]) - Convert.ToSingle(KeyboardState[Keys.Q]);
 
         _camera.MoveCamera(moveInput, (float)args.Time, MouseState.ScrollDelta.Y);
         _controller.Update(this, (float)args.Time);
@@ -179,12 +180,12 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
 
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        GL.ClearColor(Color.Black);
-
+        GL.ClearColor(new Color4(0.1f, 0.1f, 0.1f, 1.0f));
+    this.
         _objectMat.Use();
-        _objectMat.SetVector3Uniform("light.position", _lightPos);
+        _objectMat.SetVector3Uniform("light.direction", new Vector3(-0.2f, -1.0f, -0.3f)); 	
         _objectMat.SetVector3Uniform("light.ambient", new Vector3(0.2f, 0.2f, 0.2f));
-        _objectMat.SetVector3Uniform("light.diffuse", new Vector3( 0.5f, 0.5f, 0.5f));
+        _objectMat.SetVector3Uniform("light.diffuse", new Vector3(0.5f, 0.5f, 0.5f));
         _objectMat.SetVector3Uniform("light.specular", new Vector3(1.0f, 1.0f, 1.0f));
         
         _objectMat.SetMatrix4Uniform("projection", _camera.Projection);
@@ -201,9 +202,9 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         GL.BindVertexArray(_lightVao);
         for (int i = 0; i < _cubePositions.Length; i++)
         {
-            var rot = 20f * i;
+            var rot = MathHelper.DegreesToRadians(20f * i);
             var objectModel = Matrix4.Identity * Matrix4.CreateTranslation(_cubePositions[i]) * 
-                              Matrix4.CreateFromAxisAngle(new Vector3(1, 0.3f, 0), rot);
+                              Matrix4.CreateFromAxisAngle(new Vector3(1.0f, 0.3f, 0.5f), rot);
             _objectMat.SetMatrix4Uniform("model", objectModel);
         
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);

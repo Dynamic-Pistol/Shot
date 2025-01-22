@@ -115,3 +115,4 @@
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.genruntimeconfig.cache
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/ref/Shot.dll
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/bin/Debug/net8.0/Assets/lighting_maps_specular_color.png
+/run/media/kyle/Main_Disk/Projects/Shot/Shot/bin/Debug/net8.0/Assets/matrix.jpg
