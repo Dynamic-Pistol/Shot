@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using ImGuiNET;
+using ImGuizmoNET;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -95,6 +96,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     protected override void OnLoad()
     {
         base.OnLoad();
+        _camera.AspectRatio = (float)FramebufferSize.X / FramebufferSize.Y;
         _camera.LockCamera();
         _controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
@@ -166,6 +168,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         moveInput.Z = Convert.ToSingle(KeyboardState[Keys.E]) - Convert.ToSingle(KeyboardState[Keys.Q]);
 
         _camera.MoveCamera(moveInput, (float)args.Time, MouseState.ScrollDelta.Y);
+        _camera.UpdateCamera();
         _controller.Update(this, (float)args.Time);
     }
 
@@ -182,6 +185,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         base.OnRenderFrame(e);
+
 
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -269,6 +273,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             for (int i = 0; i < _cubeTransforms.Length; i++)
             {
                 
+                
                 if (ImGui.Selectable($"Cube {i}", i == _selectedObject))
                 {
                     _selectedObject = i;
@@ -282,6 +287,9 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         }
         
         
+        var matrix = Matrix4.Identity;
+        // ImGuizmo.DrawGrid(ref _camera.View.Row0.X, ref _camera.Projection.Row0.X , ref matrix.Row0.X, 1000000f);
+        
         _controller.Render();
 
         SwapBuffers();
@@ -293,6 +301,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
 
         GL.Viewport(0, 0, e.Width, e.Height);
 
+        _camera.AspectRatio = e.Width / (float)e.Height;
         _controller.WindowResized(e.Width, e.Height);
     }
 

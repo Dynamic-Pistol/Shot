@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ImGuiNET;
+using ImGuizmoNET;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
@@ -56,8 +57,10 @@ public class ImGuiController : IDisposable
 
             IntPtr context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
+            ImGuizmo.SetImGuiContext(context);
             var io = ImGui.GetIO();
             io.Fonts.AddFontDefault();
+            
 
             io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
             // Enable Docking
@@ -68,6 +71,9 @@ public class ImGuiController : IDisposable
             SetPerFrameImGuiData(1f / 60f);
 
             ImGui.NewFrame();
+            ImGuizmo.SetRect(0, 0, _windowWidth, _windowHeight);
+            ImGuizmo.BeginFrame();
+            
             _frameBegun = true;
         }
 
@@ -75,6 +81,7 @@ public class ImGuiController : IDisposable
         {
             _windowWidth = width;
             _windowHeight = height;
+            ImGuizmo.SetRect(0, 0, _windowWidth, _windowHeight);
         }
 
         public void DestroyDeviceObjects()
@@ -223,7 +230,8 @@ void main()
             UpdateImGuiInput(wnd);
 
             _frameBegun = true;
-            ImGui.NewFrame();
+            ImGui.NewFrame();         
+            ImGuizmo.BeginFrame();
         }
 
         /// <summary>

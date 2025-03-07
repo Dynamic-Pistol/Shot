@@ -16,12 +16,13 @@ public class ShotCamera
 
     private bool _canRotate = true;
     private const float Speed = 6;
+    public float AspectRatio;
 
     public void UpdateCamera()
     { 
         View = Matrix4.LookAt(Position, Position + _cameraForward, _cameraUp);
         Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(Fov),
-            800.0f / 600.0f,
+            AspectRatio,
             0.1f, 100f);
     } 
         

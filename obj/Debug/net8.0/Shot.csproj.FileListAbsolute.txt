@@ -108,7 +108,6 @@
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.AssemblyInfo.cs
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.csproj.CoreCompileInputs.cache
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.sourcelink.json
-/run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.csproj.CopyComplete
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.dll
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/refint/Shot.dll
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.pdb
@@ -116,3 +115,4 @@
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/ref/Shot.dll
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/bin/Debug/net8.0/Assets/lighting_maps_specular_color.png
 /run/media/kyle/Main_Disk/Projects/Shot/Shot/bin/Debug/net8.0/Assets/matrix.jpg
+/run/media/kyle/Main_Disk/Projects/Shot/Shot/obj/Debug/net8.0/Shot.csproj.Up2Date

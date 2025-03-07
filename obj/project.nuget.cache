@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Q7eGTy7/RO4=",
+  "dgSpecHash": "yX356TMsgDo=",
   "success": true,
   "projectFilePath": "/run/media/kyle/Main_Disk/Projects/Shot/Shot/Shot.csproj",
   "expectedPackageFiles": [
@@ -29,7 +29,7 @@
     "/home/kyle/.nuget/packages/system.numerics.vectors/4.5.0/system.numerics.vectors.4.5.0.nupkg.sha512",
     "/home/kyle/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "/home/kyle/.nuget/packages/zeroallocjobscheduler/1.1.2/zeroallocjobscheduler.1.1.2.nupkg.sha512",
-    "/home/kyle/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.11/microsoft.aspnetcore.app.ref.8.0.11.nupkg.sha512"
+    "/home/kyle/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.13/microsoft.aspnetcore.app.ref.8.0.13.nupkg.sha512"
   ],
   "logs": []
 }

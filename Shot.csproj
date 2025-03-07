@@ -9,6 +9,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DefineConstants>TRACE;</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -62,6 +63,20 @@
       <None Update="Assets\matrix.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Remove="obj\**" />
+      <None Include="cimguizmo.so" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="ImGuizmo.NET\ImGuizmo.NET.csproj" />
     </ItemGroup>
 
 </Project>
