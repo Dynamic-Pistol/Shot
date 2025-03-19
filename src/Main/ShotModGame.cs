@@ -227,21 +227,15 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
                 ref _cubeTransforms[i].EularRotation.X, ref _cubeTransforms[i].Scale.X, ref objectModel.Row0.X);
 
             _objectMat.SetMatrix4Uniform("model", objectModel);
-            
+
             var rayDir = ScreenPosToWorldRay();
-            if (!ImGuizmo.IsOver() && MouseState.IsButtonPressed(MouseButton.Left) && RayCastObject(_camera.Position, rayDir, -Vector3.One, Vector3.One, objectModel))
+            if (!ImGuizmo.IsOver() && MouseState.IsButtonPressed(MouseButton.Left) &&
+                RayCastObject(_camera.Position, rayDir * 100, -_cubeTransforms[i].Scale, _cubeTransforms[i].Scale, objectModel))
             {
                 _selectedObject = i;
             }
 
-            if (i == _selectedObject)
-            {
-                _objectMat.SetIntUniform("selected", 1);
-            }
-            else
-            {
-                _objectMat.SetIntUniform("selected", 0);
-            }
+            _objectMat.SetIntUniform("selected", i == _selectedObject ? 1 : 0);
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
         }
@@ -425,7 +419,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         Vector4 rayStartNdc = new Vector4(
             (MouseState.X / ClientSize.X - 0.5f) * 2.0f,
             (MouseState.Y / ClientSize.Y - 0.5f) * 2.0f,
-            -1.0f, // The near plane maps to Z=-1 in Normalized Device Coordinates
+            -1.0f, 
             1.0f
         );
         Vector4 rayEndNdc = new Vector4(
@@ -435,24 +429,13 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             1.0f
         );
 
-        var inverseProjectionMatrix = _camera.Projection.Transposed().Inverted();
-
-        var inverseViewMatrix = _camera.View.Transposed().Inverted();
-
-        //var rayStartCamera = inverseProjectionMatrix * rayStartNdc;
-        //rayStartCamera /= rayStartCamera.W;
-        //var rayStartWorld = inverseViewMatrix * rayStartCamera;
-        //rayStartWorld /= rayStartWorld.W;
-        //var rayEndCamera = inverseProjectionMatrix * rayEndNdc;
-        //rayEndCamera /= rayEndCamera.W;
-        //var rayEndWorld = inverseViewMatrix * rayEndCamera;
-        //rayEndWorld /= rayEndWorld.W;
-
 
         // Faster way (just one inverse)
         Matrix4 M = Matrix4.Invert(_camera.Projection * _camera.View);
-        Vector4 rayStartWorld = M * rayStartNdc; rayStartWorld/=rayStartWorld.W;
-        Vector4 rayEndWorld   = M * rayEndNdc  ; rayEndWorld  /=rayEndWorld.W;
+        Vector4 rayStartWorld = M * rayStartNdc;
+        rayStartWorld /= rayStartWorld.W;
+        Vector4 rayEndWorld = M * rayEndNdc;
+        rayEndWorld /= rayEndWorld.W;
 
 
         Vector3 rayDirWorld = new Vector3(rayEndWorld - rayStartWorld).Normalized();
@@ -472,29 +455,113 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         var oobPositionWorldspace = new Vector3(modelMatrix.Row3.X, modelMatrix.Row3.Y, modelMatrix.Row3.Z);
 
         var delta = oobPositionWorldspace - rayOrigin;
-
-        var xAxis = new Vector3(modelMatrix.Row0.X, modelMatrix.Row0.Y, modelMatrix.Row0.Z);
-        var e = Vector3.Dot(xAxis, delta);
-        var f = Vector3.Dot(rayDirection, xAxis);
-
-        var t1 = (e + aabbMin.X) / f;
-        var t2 = (e + aabbMax.X) / f;
-
-        if (t1 > t2)
         {
-            (t1, t2) = (t2, t1);
+            var xAxis = new Vector3(modelMatrix.Row0.X, modelMatrix.Row0.Y, modelMatrix.Row0.Z);
+            var e = Vector3.Dot(xAxis, delta);
+            var f = Vector3.Dot(rayDirection, xAxis);
+            if (MathF.Abs(f) > 0.001f)
+            {
+                var t1 = (e + aabbMin.X) / f;
+                var t2 = (e + aabbMax.X) / f;
+
+                if (t1 > t2)
+                {
+                    (t1, t2) = (t2, t1);
+                }
+
+                if (t2 < tMax)
+                {
+                    tMax = t2;
+                }
+
+                if (t1 > tMin)
+                {
+                    tMin = t1;
+                }
+
+                if (tMax < tMin)
+                {
+                    return false;
+                }
+            }
+            else if (-e + aabbMin.Z > 0.0f || -e + aabbMax.Z < 0.0f)
+            {
+                return false;
+            }
         }
 
-        if (t2 < tMax)
         {
-            tMax = t2;
+            var yAxis = new Vector3(modelMatrix.Row1.X, modelMatrix.Row1.Y, modelMatrix.Row1.Z);
+            var e = Vector3.Dot(yAxis, delta);
+            var f = Vector3.Dot(rayDirection, yAxis);
+
+            if (MathF.Abs(f) > 0.001f)
+            {
+                var t1 = (e + aabbMin.Y) / f;
+                var t2 = (e + aabbMax.Y) / f;
+
+                if (t1 > t2)
+                {
+                    (t1, t2) = (t2, t1);
+                }
+
+                if (t2 < tMax)
+                {
+                    tMax = t2;
+                }
+
+                if (t1 > tMin)
+                {
+                    tMin = t1;
+                }
+
+                if (tMax < tMin)
+                {
+                    return false;
+                }
+            }
+
+            else if (-e + aabbMin.Z > 0.0f || -e + aabbMax.Z < 0.0f)
+            {
+                return false;
+            }
         }
 
-        if (t1 > tMin)
         {
-            tMin = t1;
+            var zAxis = new Vector3(modelMatrix.Row2.X, modelMatrix.Row2.Y, modelMatrix.Row2.Z);
+            var e = Vector3.Dot(zAxis, delta);
+            var f = Vector3.Dot(rayDirection, zAxis);
+
+            var t1 = (e + aabbMin.Z) / f;
+            var t2 = (e + aabbMax.Z) / f;
+            if (MathF.Abs(f) > 0.001f)
+            {
+                if (t1 > t2)
+                {
+                    (t1, t2) = (t2, t1);
+                }
+
+                if (t2 < tMax)
+                {
+                    tMax = t2;
+                }
+
+                if (t1 > tMin)
+                {
+                    tMin = t1;
+                }
+
+                if (tMax < tMin)
+                {
+                    return false;
+                }
+            }
+            else if (-e + aabbMin.Z > 0.0f || -e + aabbMax.Z < 0.0f)
+            {
+                return false;
+            }
         }
 
-        return tMax > tMin;
+        return true;
     }
 }
