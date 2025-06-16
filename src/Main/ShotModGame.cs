@@ -82,13 +82,18 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         new ShotTransform(new Vector3(-1.3f, 1.0f, -1.5f))
     ];
 
+
     private uint _cubeVao;
     private uint _lightVao;
+
+
+    private readonly List<(uint vao, uint vbo)> _linesData = [];
 
     private uint _vbo;
 
     private ShotMaterial _lampMat = null!;
     private ShotMaterial _objectMat = null!;
+    private ShotMaterial _lineMat = null!;
 
     private Vector3 _lightPos = new Vector3(0, 0, 3);
 
@@ -99,7 +104,6 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     protected override void OnLoad()
     {
         base.OnLoad();
-
         _camera.AspectRatio = (float)FramebufferSize.X / FramebufferSize.Y;
         _camera.LockCamera();
         _controller = new ImGuiController(ClientSize.X, ClientSize.Y);
@@ -120,6 +124,12 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         {
             { ShaderType.VertexShader, File.ReadAllText("Assets/Shaders/light.vert") },
             { ShaderType.FragmentShader, File.ReadAllText("Assets/Shaders/light.frag") }
+        });
+
+        _lineMat = new ShotMaterial(new Dictionary<ShaderType, string>
+        {
+            { ShaderType.VertexShader, File.ReadAllText("Assets/Shaders/line.vert") },
+            { ShaderType.FragmentShader, File.ReadAllText("Assets/Shaders/line.frag") }
         });
 
         GL.GenVertexArrays(1, out _cubeVao);
@@ -151,6 +161,7 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             6 * sizeof(float));
         GL.EnableVertexAttribArray(2);
 
+
         _tex1 = LoadTexture("Assets/container2.png");
         _tex2 = LoadTexture("Assets/lighting_maps_specular_color.png");
 
@@ -164,6 +175,8 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             _cubeTransforms[i].EularRotation =
                 Quaternion.FromAxisAngle(new Vector3(1.0f, 0.3f, 0.5f), rot).ToEulerAngles();
         }
+
+        AddLine(Vector3.Zero, Vector3.UnitZ * 100);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -183,8 +196,8 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
     {
         base.OnMouseMove(e);
         const float sensitivity = 0.04f;
-        float moveX = e.DeltaX * sensitivity;
-        float moveY = e.DeltaY * sensitivity;
+        var moveX = e.DeltaX * sensitivity;
+        var moveY = e.DeltaY * sensitivity;
         _camera.RotateCamera(moveX, moveY);
     }
 
@@ -199,7 +212,8 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
 
         var matrix = Matrix4.Identity;
         ImGuizmo.DrawGrid(ref _camera.View.Row0.X, ref _camera.Projection.Row0.X, ref matrix.Row0.X, 20);
-        ImGuizmo.ViewManipulate(ref _camera.View.Row0.X, 1, Vector2.Zero, new Vector2(100, 100), 255);
+        ImGuizmo.ViewManipulate(ref _camera.View.Row0.X, 4*4, Vector2.Zero, new Vector2(100, 100), 255);
+        // _camera.SetCamera();
 
         _objectMat.Use();
         _objectMat.SetVector3Uniform("light.direction", new Vector3(-0.2f, -1.0f, -0.3f));
@@ -229,16 +243,21 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             _objectMat.SetMatrix4Uniform("model", objectModel);
 
             var rayDir = ScreenPosToWorldRay();
-            if (!ImGuizmo.IsOver() && MouseState.IsButtonPressed(MouseButton.Left) &&
-                RayCastObject(_camera.Position, rayDir * 100, -_cubeTransforms[i].Scale, _cubeTransforms[i].Scale, objectModel))
+            if (!ImGuizmo.IsOver() && MouseState.IsButtonPressed(MouseButton.Left))
             {
-                _selectedObject = i;
+                AddLine(_camera.Position, rayDir * 100);
+                if (RayCastObject(_camera.Position, _camera.Position + rayDir * 100, -_cubeTransforms[i].Scale,
+                        _cubeTransforms[i].Scale, objectModel))
+                {
+                    _selectedObject = i;
+                }
             }
 
             _objectMat.SetIntUniform("selected", i == _selectedObject ? 1 : 0);
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
         }
+
 
         var lampModel = Matrix4.Identity * Matrix4.CreateTranslation(_lightPos) * Matrix4.CreateScale(0.2f);
 
@@ -314,6 +333,16 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             ImGui.End();
         }
 
+        _lineMat.Use();
+        foreach (var lineData in _linesData)
+        {
+            _lineMat.SetMatrix4Uniform("projection", _camera.Projection);
+            _lineMat.SetMatrix4Uniform("view", _camera.View);
+            GL.BindVertexArray(lineData.vao);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, lineData.vbo);
+            GL.DrawArrays(PrimitiveType.Lines, 0, 2);
+        }
+
         _controller.Render();
 
         SwapBuffers();
@@ -349,6 +378,15 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
                 break;
             case Keys.J:
                 CursorState = _camera.LockCamera();
+                break;
+            case Keys.C:
+                foreach (var lineData in _linesData)
+                {
+                    GL.DeleteVertexArray(lineData.vao);
+                    GL.DeleteBuffer(lineData.vbo);
+                }
+
+                _linesData.Clear();
                 break;
             case Keys.Escape:
                 Close();
@@ -416,31 +454,59 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
 
     private Vector3 ScreenPosToWorldRay()
     {
-        Vector4 rayStartNdc = new Vector4(
-            (MouseState.X / ClientSize.X - 0.5f) * 2.0f,
-            (MouseState.Y / ClientSize.Y - 0.5f) * 2.0f,
-            -1.0f, 
-            1.0f
+        Vector4 rayStart = new Vector4(
+            (MouseState.X / ClientSize.X - 0.5f) * 2f,
+            (MouseState.Y / ClientSize.Y - 0.5f) * 2f,
+            -1f,
+            +1f
         );
-        Vector4 rayEndNdc = new Vector4(
-            (MouseState.X / ClientSize.X - 0.5f) * 2.0f,
-            (MouseState.Y / ClientSize.Y - 0.5f) * 2.0f,
-            0.0f,
-            1.0f
+        Vector4 rayEnd = new Vector4(
+            (MouseState.X / ClientSize.X - 0.5f) * 2f,
+            (MouseState.Y / ClientSize.Y - 0.5f) * 2f,
+            0f,
+            1f
         );
 
 
-        // Faster way (just one inverse)
-        Matrix4 M = Matrix4.Invert(_camera.Projection * _camera.View);
-        Vector4 rayStartWorld = M * rayStartNdc;
+        var invertedMatrix = Matrix4.Invert(_camera.Projection * _camera.View);
+
+        var rayStartWorld = invertedMatrix * rayStart;
         rayStartWorld /= rayStartWorld.W;
-        Vector4 rayEndWorld = M * rayEndNdc;
+        var rayEndWorld = invertedMatrix * rayEnd;
         rayEndWorld /= rayEndWorld.W;
 
-
-        Vector3 rayDirWorld = new Vector3(rayEndWorld - rayStartWorld).Normalized();
+        Vector3 rayDirWorld = Vector3.Normalize(rayEndWorld.Xyz - rayStartWorld.Xyz);
 
         return rayDirWorld;
+    
+
+    // Vector4 rayClip = new Vector4(
+        //     2.0f * MouseState.X / ClientSize.X - 1.0f,
+        //     1.0f - 2.0f * MouseState.Y / ClientSize.Y,
+        //     -1.0f,
+        //     1.0f
+        // );
+        //
+        // var rayEye = _camera.Projection.Inverted() * rayClip;
+        // rayEye /= rayEye.W;
+        //
+        //
+        // var rayDirWorld = (_camera.View.Inverted() * rayEye).Xyz;// / rayEye.W;
+        // rayDirWorld = (Matrix4.Identity.Inverted() * rayDirWorld);
+        // rayDirWorld = rayDirWorld.Normalized();
+        //
+        // return rayDirWorld;
+
+    //     var invView = _camera.View.Inverted();
+    //     var invProj = _camera.Projection.Inverted();
+    //     
+    //     Vector4.TransformRow(in rayClip, in invProj, out rayClip);
+    //     Vector4.TransformRow(in rayClip, in invView, out rayClip);
+    //     
+    //     rayClip.Xyz /= rayClip.W;
+    //     rayClip.Normalize();
+    //
+    //     return rayClip.Xyz;
     }
 
     private bool RayCastObject(Vector3 rayOrigin,
@@ -452,9 +518,9 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         var tMin = 0.0f;
         var tMax = 100000.0f;
 
-        var oobPositionWorldspace = new Vector3(modelMatrix.Row3.X, modelMatrix.Row3.Y, modelMatrix.Row3.Z);
+        var oobPositionWorldSpace = new Vector3(modelMatrix.Row3.X, modelMatrix.Row3.Y, modelMatrix.Row3.Z);
 
-        var delta = oobPositionWorldspace - rayOrigin;
+        var delta = oobPositionWorldSpace - rayOrigin;
         {
             var xAxis = new Vector3(modelMatrix.Row0.X, modelMatrix.Row0.Y, modelMatrix.Row0.Z);
             var e = Vector3.Dot(xAxis, delta);
@@ -563,5 +629,23 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
         }
 
         return true;
+    }
+
+    private void AddLine(Vector3 origin, Vector3 target)
+    {
+        GL.GenVertexArrays(1, out uint lineVao);
+        GL.BindVertexArray(lineVao);
+
+        GL.GenBuffers(1, out uint lineVbo);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, lineVbo);
+        GL.BufferData(BufferTarget.ArrayBuffer, 2 * Marshal.SizeOf<Vector3>(), [origin, origin + target],
+            BufferUsageHint.StaticDraw);
+
+
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vector3>(),
+            0);
+        GL.EnableVertexAttribArray(0);
+
+        _linesData.Add((lineVao, lineVbo));
     }
 }
