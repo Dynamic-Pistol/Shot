@@ -333,6 +333,15 @@ public class ShotGame(GameWindowSettings gameWindowSettings, NativeWindowSetting
             ImGui.End();
         }
 
+        if (ImGui.Begin("Console"))
+        {
+            ImGui.End();
+        }
+        else
+        {
+            ImGui.End();
+        }
+
         _lineMat.Use();
         foreach (var lineData in _linesData)
         {
